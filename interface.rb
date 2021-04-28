@@ -17,8 +17,9 @@ class Interface
   private
 
   def main_loop
+    @game.new_session
     # для каждого раунда
-    while true
+    loop do
       # если не получилось запустить новый раунд => у игрока(или дилера) нет денег
       break unless @game.round_started?
 
@@ -51,6 +52,8 @@ class Interface
     else
       puts "You won this time, #{@name}!"
     end
+    puts "Want to start a new game? [y/n]"
+    main_loop if gets.chomp == 'y'
   end
 
   # closed - закрыть ли карты дилера?
@@ -80,11 +83,15 @@ class Interface
   end
 
   def handle_options(status)
+    puts '0 - exit'
     puts '1 - check'
     puts '2 - show cards'
     puts '3 - hit' if status[:can_hit]
     inp = gets.chomp.to_i
-    if inp == 1
+    if inp == 0
+      puts 'Good bye!'
+      exit
+    elsif inp == 1
       @game.check
     elsif inp == 2
       @game.cards_off

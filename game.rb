@@ -12,10 +12,16 @@ class Game
   attr_reader :dealer, :player, :card_stack, :round_num, :winner
 
   def initialize(bet_amount = 10, start_cash = 100)
-    @dealer = Person.new(start_cash)
-    @player = Person.new(start_cash)
     @bet = bet_amount
+    @start_cash = start_cash
     @card_stack = CardStack.new
+    new_session
+  end
+
+  def new_session
+    @dealer = Person.new(@start_cash)
+    @player = Person.new(@start_cash)
+    @card_stack.shuffle
     @round_num = 0 # номер текущего раунда
     @winner = nil
     self.cash = 0
