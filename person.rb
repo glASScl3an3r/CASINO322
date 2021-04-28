@@ -25,7 +25,10 @@ class Person
       ace_count += 1 if card.type == :A
       pts += card.value
     end
-    pts -= 10 while pts > 21 && ace_count.positive?
+    while pts > 21 && ace_count.positive? do
+      pts -= 10
+      ace_count -= 1
+    end
     pts
   end
 end
