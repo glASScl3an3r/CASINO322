@@ -3,4 +3,4 @@
 require_relative 'interface'
 
 i = Interface.new(Game.new)
-i.Start
+i.start

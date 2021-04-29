@@ -7,7 +7,7 @@ class Interface
     @game = game
   end
 
-  def Start
+  def start
     print 'Your name: '
     @name = gets.chomp
     puts "Hello, #{@name}! Good luck!"
@@ -30,7 +30,7 @@ class Interface
       # для каждого действия игрока
       loop do
         status = @game.status
-        #есть победитель?
+        # есть победитель?
         unless status[:winner].nil?
           print_table(status, false)
           winner = 'No one'
@@ -52,7 +52,7 @@ class Interface
     else
       puts "You won this time, #{@name}!"
     end
-    puts "Want to start a new game? [y/n]"
+    puts 'Want to start a new game? [y/n]'
     main_loop if gets.chomp == 'y'
   end
 
@@ -88,7 +88,7 @@ class Interface
     puts '2 - show cards'
     puts '3 - hit' if status[:can_hit]
     inp = gets.chomp.to_i
-    if inp == 0
+    if inp.zero?
       puts 'Good bye!'
       exit
     elsif inp == 1

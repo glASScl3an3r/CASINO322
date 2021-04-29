@@ -1,9 +1,6 @@
 # frozen_string_literal: true
 
 class CardStack
-  CARD_TYPES = %i[v2 v3 v4 v5 v6 v7 v8 v9 v10 J Q K A].freeze
-  CARD_SUITS = %i[spades diamonds hearts clubs].freeze
-
   def initialize
     @cards = []
   end
@@ -18,8 +15,8 @@ class CardStack
   def shuffle(packs_count = 1)
     @cards.clear
     (1..packs_count).each do
-      CARD_TYPES.each do |type|
-        CARD_SUITS.each do |suit|
+      Card::CARD_TYPES.each do |type|
+        Card::CARD_SUITS.each do |suit|
           @cards.push(Card.new(type, suit, value(type, suit)))
         end
       end
@@ -32,6 +29,6 @@ class CardStack
   def value(type, _suit)
     return 11 if type == :A
 
-    [10, CARD_TYPES.index(type) + 2].min
+    [10, Card::CARD_TYPES.index(type) + 2].min
   end
 end

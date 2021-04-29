@@ -4,6 +4,7 @@ require_relative 'bank'
 require_relative 'person'
 require_relative 'card_stack'
 require_relative 'card'
+require_relative 'hand'
 
 class Game
   include Bank
@@ -29,8 +30,8 @@ class Game
 
   def round_started?
     # сбросить все карты до начала нового раунда
-    @player.clear
-    @dealer.clear
+    @player.hand.clear
+    @dealer.hand.clear
     # если в банке есть деньги, завершаем прошлый раунд
     end_round if cash != 0
     # победителя нет => продолжаем играть
@@ -42,8 +43,8 @@ class Game
     @round_num += 1
     # дилер и игрок получают по две карты
     2.times do
-      @player.get(@card_stack.next)
-      @dealer.get(@card_stack.next)
+      @player.hand.get(@card_stack.next)
+      @dealer.hand.get(@card_stack.next)
     end
     # делаем ставки в банк
     gain(@player.lose(@bet))
@@ -54,22 +55,22 @@ class Game
   # данные для интерфейса
   def status
     {
-      dealer_pts: @dealer.score,
-      dealer_hand: @dealer.cards,
+      dealer_pts: @dealer.hand.score,
+      dealer_hand: @dealer.hand.cards,
       dealer_bank: @dealer.cash,
-      player_pts: @player.score,
-      player_hand: @player.cards,
+      player_pts: @player.hand.score,
+      player_hand: @player.hand.cards,
       player_bank: @player.cash,
       winner: @winner,
       round: @round_num,
-      can_hit: @player.cards.length == 2,
+      can_hit: !@player.hand.enough?,
       game_end: !@winner.nil?
     }
   end
 
   # получить карту
   def hit
-    @player.get(@card_stack.next) if @player.cards.length == 2
+    @player.hand.get(@card_stack.next) unless @player.hand.enough?
     dealer_turn
   end
 
@@ -87,16 +88,16 @@ class Game
   private
 
   def dealer_turn
-    @dealer.get(@card_stack.next) if @dealer.score < 17 && @dealer.cards.length == 2
+    @dealer.hand.get(@card_stack.next) if @dealer.hand.score < 17 && !@dealer.hand.enough?
   end
 
   def who_winner
-    return :dealer if @player.score > 21
-    return :player if @dealer.score > 21
+    return :dealer if @player.hand.score > 21
+    return :player if @dealer.hand.score > 21
 
-    if @player.score == @dealer.score
+    if @player.hand.score == @dealer.hand.score
       :draw
-    elsif @player.score > @dealer.score
+    elsif @player.hand.score > @dealer.hand.score
       :player
     else
       :dealer
